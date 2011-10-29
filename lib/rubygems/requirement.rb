@@ -144,6 +144,11 @@ class Gem::Requirement
     fix_syck_default_key_in_requirements
   end
 
+  def yaml_initialize tag, val
+    val.each { |k,v| self.instance_variable_set :"@#{k}", v }
+    fix_syck_default_key_in_requirements
+  end
+
   def prerelease?
     requirements.any? { |r| r.last.prerelease? }
   end
@@ -202,7 +207,7 @@ class Gem::Requirement
   def fix_syck_default_key_in_requirements
     # Fixup the Syck DefaultKey bug
     @requirements.each do |r|
-      if r[0].kind_of? YAML::Syck::DefaultKey
+      if r[0].kind_of? Syck::DefaultKey
         r[0] = "="
       end
     end
